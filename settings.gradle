@@ -1,0 +1,3 @@
+rootProject.name = 'tenant-spring-boot-starter'
+include 'demo'
+include 'tenant-spring-boot-starter'

@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+group 'show.lmm'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
