@@ -24,3 +24,5 @@ hs_err_pid*
 /.idea
 /.gradle
 /tenant-spring-boot-starter/build
+/config
+/tenant-spring-boot-starter/gradle.properties

@@ -32,3 +32,108 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    [compileJava]*.options*.encoding = 'UTF-8'
+}
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    [compileTestJava]*.options*.encoding = 'UTF-8'
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+// 生成 javadoc jar
+task javadocJar(type: Jar) {
+    archiveClassifier.set('javadoc')
+    from javadoc.destinationDir
+}
+// javadoc 配置，这里是自定义了 java doc 的一些配置
+javadoc {
+    description = "Generates project-level javadoc for use in -javadoc jar"
+
+    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+    options.author = true
+    options.version = true
+    options.header = project.name
+    options.addStringOption('Xdoclint:none', '-quiet')
+
+    // suppress warnings due to cross-module @see and @link references;
+    // note that global 'api' task does display all warnings.
+    logging.captureStandardError LogLevel.INFO
+    logging.captureStandardOutput LogLevel.INFO // suppress "## warnings" message
+    options.encoding = "UTF-8"
+    options.charSet = 'UTF-8'
+}
+artifacts {
+    archives javadocJar, sourcesJar
+}
+publishing {
+    // 定义发布什么
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                // 构件名称
+                // 区别于artifactId，可以理解为artifactName
+                name = '基于spring boot+mybatis的多租户插件'
+                // 构件描述
+                description = '基于spring boot+mybatis的多租户插件'
+                // 构件主页
+                url = 'https://github.com/lmm1990/tenant-spring-boot-starter'
+                // 许可证名称和地址
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/lmm1990/tenant-spring-boot-starter/blob/main/LICENSE'
+                    }
+                }
+                // 开发者信息
+                developers {
+                    developer {
+                        name = 'liumingming'
+                        email = '544484078@qq.com'
+                    }
+                }
+                // 版本控制仓库地址
+                scm {
+                    url = 'https://github.com/lmm1990/tenant-spring-boot-starter'
+                    connection = 'scm:git:git://github.com/lmm1990/tenant-spring-boot-starter.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:lmm1990/tenant-spring-boot-starter.git'
+                }
+            }
+        }
+    }
+    // 定义发布到哪里
+    repositories {
+        maven {
+            name 'sonatypeRepository'
+            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = "${sonatypeUsername}"
+                password = "${sonatypePassword}"
+            }
+        }
+        maven {
+            name = 'sonatypeSnapshotRepository'
+            url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            credentials {
+                username = "${sonatypeUsername}"
+                password = "${sonatypePassword}"
+            }
+        }
+    }
+}
+signing {
+    sign publishing.publications.mavenJava
+}
