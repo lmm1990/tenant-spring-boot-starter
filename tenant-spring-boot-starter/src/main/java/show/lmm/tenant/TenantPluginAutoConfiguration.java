@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import show.lmm.tenant.config.TenantConfig;
+import show.lmm.tenant.utils.sql.mysql.MySqlASTVisitor;
 
 /**
  * mybatis多租户插件自动注册
@@ -26,5 +27,10 @@ public class TenantPluginAutoConfiguration {
     @ConditionalOnMissingBean(TenantPluginBeanPostProcessor.class)
     public TenantPluginBeanPostProcessor tenantPluginBeanPostProcessor() {
         return new TenantPluginBeanPostProcessor();
+    }
+    @Bean
+    @ConditionalOnMissingBean(MySqlASTVisitor.class)
+    public MySqlASTVisitor mySqlASTVisitor(TenantConfig tenantConfig) {
+        return new MySqlASTVisitor(tenantConfig);
     }
 }

@@ -27,3 +27,4 @@ hs_err_pid*
 /config
 /tenant-spring-boot-starter/gradle.properties
 /gradle.properties
+/demo/build

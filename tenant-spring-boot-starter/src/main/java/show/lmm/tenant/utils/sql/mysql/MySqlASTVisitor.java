@@ -24,7 +24,6 @@ import java.util.List;
  * @author 刘明明
  * @since 2022-02-25 13:53
  */
-@Component
 public class MySqlASTVisitor extends MySqlASTVisitorAdapter {
     private final TenantConfig tenantConfig;
 
